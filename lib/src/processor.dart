@@ -87,7 +87,7 @@ class Processor<R, I> {
   //
   /// the function being run in the isolate
   ///
-  late final R Function(I input) function;
+  late final FutureOr<R> Function(I input) function;
 
   /// a [Stream] containing processed outputs
   ///
@@ -140,7 +140,6 @@ class Processor<R, I> {
       metaPort.sendPort,
       _closePort.sendPort
     ];
-
     _isolate = await Isolate.spawn(_functionRunner, setupList);
 
     // obtain a port to send inputs to the isolate
@@ -266,7 +265,11 @@ class Processor<R, I> {
         inputPort.close();
       } else {
         var output = function(input);
-        outputPort.send(output);
+        if (output is Future) {
+          output.then(outputPort.send);
+        } else {
+          outputPort.send(output);
+        }
       }
     });
   }

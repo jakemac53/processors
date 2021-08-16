@@ -17,7 +17,7 @@ class ProcessorPool<R, I> {
 
   /// the function being run
   ///
-  late R Function(I input) function;
+  late FutureOr<R> Function(I input) function;
 
   // a streamController, we use this to enable type checks/enforcement over isolate outputs
   // and also the pipe outputs from all processes into a common output point

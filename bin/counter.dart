@@ -48,12 +48,12 @@ Future<void> main(List<String> args) async {
     pool.send([filePath, startIndex, endIndex]);
   }
 
-
-  pool.shutdown();
-
+  var count = 8;
   await for (var each in pool.outputStream) {
-    await each;
+    print(each);
+    if (--count == 0) break;
   }
+  pool.shutdown();
 
   print(DateTime.now().difference(st));
 }
